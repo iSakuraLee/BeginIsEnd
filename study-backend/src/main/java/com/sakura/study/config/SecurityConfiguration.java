@@ -17,10 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
@@ -30,8 +33,11 @@ public class SecurityConfiguration {
     @Resource
     private AuthorizeService authorizeService;
 
+    @Resource
+    private DataSource dataSource;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, PersistentTokenRepository repository) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests()
                 .anyRequest()
@@ -45,6 +51,11 @@ public class SecurityConfiguration {
                 .logout()
                 .logoutUrl("/api/auth/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
+                .and()
+                .rememberMe()
+                .rememberMeParameter("remember")
+                .tokenRepository(repository)
+                .tokenValiditySeconds(3600 * 34 * 7)
                 .and()
                 .csrf()
                 .disable()
@@ -69,6 +80,14 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", cors);
 
         return source;
+    }
+
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        jdbcTokenRepository.setCreateTableOnStartup(false);
+        return jdbcTokenRepository;
     }
 
     @Bean
