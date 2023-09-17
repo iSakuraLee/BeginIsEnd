@@ -65,7 +65,7 @@ const login = ()=> {
       <span style="color: grey;font-size: 13px">没有账号</span>
     </el-divider>
     <div>
-      <el-button style="width: 250px" type="warning" plain>注册账号</el-button>
+      <el-button @click="router.push('/register')" style="width: 250px" type="warning" plain>注册账号</el-button>
     </div>
   </div>
 </template>

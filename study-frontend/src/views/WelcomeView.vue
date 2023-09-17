@@ -12,7 +12,9 @@
       <div style="margin-top: 10px;font-size: 40px">Something wonderful is about to happen.</div>
     </div>
     <div style="width: 400px;background-color: white">
-      <router-view/>
+      <transition name="el-fade-in-linear">
+        <router-view/>
+      </transition>
     </div>
   </div>
 </template>
