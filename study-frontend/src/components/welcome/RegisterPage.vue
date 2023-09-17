@@ -23,10 +23,31 @@ const validateUsername = (rule, value, callback) => {
   }
 }
 
+const validatePassword = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== form.password) {
+    callback(new Error('两次输入的密码不一致'))
+  } else {
+    callback()
+  }
+}
+
 const rules = {
   username: [
     {validator: validateUsername, trigger: ['blur','change']},
     {min: 2, max: 8, message: '用户名长度需要在2-8个字符之间', trigger: ['blur', 'change']}
+  ],
+  password: [
+    {required: true, message: '请输入密码', trigger: ['blur', 'change']},
+    {min: 6, max: 6, message: '密码长度需要在6-16个字符之间', trigger: ['blur', 'change']}
+  ],
+  password_repeat: [
+    {validator: validatePassword, trigger: ['blur', 'change']}
+  ],
+  email: [
+    {required: true, message: '请输入邮件地址', trigger: ['blur', 'change']},
+    {type: 'email', message: '请输入合法的邮件地址', trigger: ['blur', 'change']}
   ]
 }
 
