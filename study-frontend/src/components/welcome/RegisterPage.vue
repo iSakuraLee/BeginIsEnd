@@ -2,6 +2,7 @@
 
 import {Lock, Message, Ship, User} from "@element-plus/icons-vue";
 import router from "@/router";
+import {reactive} from "vue";
 
 
 const form = reactive({
