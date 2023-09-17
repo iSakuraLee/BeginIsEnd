@@ -2,7 +2,7 @@
 
 import {Lock, Message, Ship, User} from "@element-plus/icons-vue";
 import router from "@/router";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 
 
 const form = reactive({
@@ -33,6 +33,13 @@ const validatePassword = (rule, value, callback) => {
   }
 }
 
+const isEmailValid = ref(false)
+const onValidate = (prop, isValid) => {
+  if (prop === 'email') {
+    isEmailValid.value = isValid
+  }
+}
+
 const rules = {
   username: [
     {validator: validateUsername, trigger: ['blur','change']},
@@ -60,7 +67,7 @@ const rules = {
       <div style="font-size: 14px;color: grey">欢迎注册我们的学习平台</div>
     </div>
     <div class="register">
-      <el-form :model="form" :rules="rules">
+      <el-form :model="form" :rules="rules" @validate="onValidate">
         <el-form-item prop="username">
           <el-input v-model="form.username" type="text" placeholder="用户名">
             <template #prefix>
@@ -99,7 +106,7 @@ const rules = {
               </el-input>
             </el-col>
             <el-col :span="6" style="width: 30%">
-              <el-button type="success">获取验证码</el-button>
+              <el-button type="success" :disabled="!isEmailValid">获取验证码</el-button>
             </el-col>
           </el-row>
         </el-form-item>
